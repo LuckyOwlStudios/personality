@@ -3,6 +3,8 @@
   "trait.personality.silly.desc": "Stays up past bedtime and sleeps in the next morning.",
   "trait.personality.sleepy": "Sleepy",
   "trait.personality.sleepy.desc": "Turns in early, sleeps in, and moves a little slower.",
+  "trait.personality.curious": "Curious",
+  "trait.personality.curious.desc": "Now and then follows a nearby player or villager for a while.",
   "commands.personality.traits.list": "%s: %s",
   "commands.personality.traits.none": "no traits",
   "commands.personality.traits.no_animals": "None of the targets can have traits",

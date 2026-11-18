@@ -36,6 +36,11 @@ public final class Traits {
             .speedModifier(-0.2)
             .build());
 
+    /** Now and then wanders over to a nearby player or villager and tags along for a while. */
+    public static final Trait CURIOUS = register(Trait.builder(Constants.id("curious"))
+            .chance(0.15F)
+            .build());
+
     private Traits() {
     }
 

@@ -48,8 +48,10 @@ synced to clients). Traits nudge an animal's behaviour, so no two animals in a h
 |--------|--------|--------|
 | Silly  | 15%    | Goes to bed ~1.8 hours later and wakes ~1.5 hours later. |
 | Sleepy | 15%    | Goes to bed ~1.5 hours earlier, wakes ~1.5 hours later, and moves 20% slower. |
+| Curious | 15%   | Now and then (about every 30 seconds to 2 minutes) follows a nearby player or villager for 10 to 25 seconds, keeping about 3 blocks away. |
 
-Silly and Sleepy never appear together. Which mobs get traits is controlled by
+Silly and Sleepy never appear together. Behaviour traits such as Curious use AI goals, so they don't affect
+brain-driven mobs (goats, camels, armadillos, frogs, axolotls, sniffers) yet. Which mobs get traits is controlled by
 `data/personality/tags/entity_type/has_traits.json` (every sleeper by default).
 
 Ops can inspect and edit traits with `/personality traits <targets>`, plus `add <trait>`, `remove <trait>` or
