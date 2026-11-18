@@ -6,8 +6,10 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LivingEntityMixin",
+    "LivingEntityPanicMixin",
     "MobMixin",
-    "ParrotMixin"
+    "ParrotMixin",
+    "PathfinderMobMixin"
   ],
   "client": [
     "client.LivingEntityRendererAccessor",

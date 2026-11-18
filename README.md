@@ -39,6 +39,14 @@ HD textures) gets matching eyelids without extra art. Optional: `"lash_shade"` (
 The lying-down pose is generic too: any model whose leg parts follow vanilla naming (`left_front_leg`,
 `right_hind_leg`, `left_leg`, ...) folds its legs and lowers onto the ground.
 
+## Herd panic
+
+- Hit an animal and the whole herd bolts. Every skittish animal within 12 blocks (the one you hit included) runs away
+  from you for about 7 seconds, or until it's well clear of you. Arrows and other projectiles count too.
+- Sleeping animals nearby wake up and run.
+- Tamed pets, tamed horses, mounts with a rider and leashed animals stay put.
+- Which animals are skittish is data-driven: `data/personality/tags/entity_type/skittish.json`.
+
 ## Building
 
 ```

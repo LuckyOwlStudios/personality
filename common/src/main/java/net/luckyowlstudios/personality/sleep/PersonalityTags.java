@@ -16,6 +16,9 @@ public final class PersonalityTags {
     /** Sleepers in this tag doze standing up (like horses) instead of lying down. */
     public static final TagKey<EntityType<?>> SLEEPS_STANDING = TagKey.create(Registries.ENTITY_TYPE, Constants.id("sleeps_standing"));
 
+    /** Wild animals that panic and run from a player who hurts one of them or a neighbour. */
+    public static final TagKey<EntityType<?>> SKITTISH = TagKey.create(Registries.ENTITY_TYPE, Constants.id("skittish"));
+
     private PersonalityTags() {
     }
 }
