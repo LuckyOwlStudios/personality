@@ -39,6 +39,25 @@ HD textures) gets matching eyelids without extra art. Optional: `"lash_shade"` (
 The lying-down pose is generic too: any model whose leg parts follow vanilla naming (`left_front_leg`,
 `right_hind_leg`, `left_leg`, ...) folds its legs and lowers onto the ground.
 
+## Personality traits
+
+Each animal is born with a random set of traits (rolled the first time it is loaded, saved with the animal, and
+synced to clients). Traits nudge an animal's behaviour, so no two animals in a herd act quite the same.
+
+| Trait  | Chance | Effect |
+|--------|--------|--------|
+| Silly  | 15%    | Goes to bed ~1.8 hours later and wakes ~1.5 hours later. |
+| Sleepy | 15%    | Goes to bed ~1.5 hours earlier, wakes ~1.5 hours later, and moves 20% slower. |
+
+Silly and Sleepy never appear together. Which mobs get traits is controlled by
+`data/personality/tags/entity_type/has_traits.json` (every sleeper by default).
+
+Ops can inspect and edit traits with `/personality traits <targets>`, plus `add <trait>`, `remove <trait>` or
+`reroll`. For example, `/personality traits @e[type=cow,distance=..10]` lists the traits of nearby cows.
+
+New traits are registered in `Traits` with `Trait.builder(...)`; each builder option is a kind of effect
+(schedule shifts, speed, incompatibilities) that the rest of the mod reads through `TraitEffects`.
+
 ## Building
 
 ```
