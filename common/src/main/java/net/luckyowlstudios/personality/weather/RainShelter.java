@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
@@ -150,6 +151,10 @@ public final class RainShelter {
         }
         Level level = mob.level();
         Optional<WalkTarget> walkTarget = brain.getMemory(MemoryModuleType.WALK_TARGET);
+        if (walkTarget.isPresent() && walkTarget.get().getTarget() instanceof EntityTracker) {
+            // Chasing or following a specific entity (e.g. charging a player) beats staying dry.
+            return;
+        }
         boolean headingForCover = walkTarget.isPresent() && isCovered(level, walkTarget.get().getTarget().currentBlockPosition());
         if (isExposedToRain(mob)) {
             if (headingForCover || (mob.tickCount + mob.getId()) % BRAIN_SEARCH_INTERVAL != 0) {
