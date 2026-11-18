@@ -2,6 +2,7 @@ package net.luckyowlstudios.personality.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.luckyowlstudios.personality.client.eyes.ClosedEyesLayer;
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.client.sleep.SleepPose;
 import net.luckyowlstudios.personality.client.sleep.SleepRenderContext;
 import net.luckyowlstudios.personality.sleep.SleepingMob;
@@ -33,7 +34,7 @@ public abstract class LivingEntityRendererMixin {
     private void personality$beginSleepPose(LivingEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         if (entity instanceof SleepingMob sleeper) {
             float progress = sleeper.personality$getSleepProgress(partialTick);
-            SleepRenderContext.push(progress, progress > 0.0F && SleepPose.shouldFoldLegs(entity, this.model));
+            SleepRenderContext.push(progress, progress > 0.0F && PersonalityConfig.LIE_DOWN.get() && SleepPose.shouldFoldLegs(entity, this.model));
         } else {
             SleepRenderContext.push(0.0F, false);
         }

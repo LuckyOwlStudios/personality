@@ -27,7 +27,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "hurt", at = @At("RETURN"))
     private void personality$wakeWhenHurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ() && this instanceof SleepingMob sleeper && !((LivingEntity) (Object) this).level().isClientSide) {
-            sleeper.personality$wakeUp(SleepRules.STAY_AWAKE_AFTER_HURT);
+            sleeper.personality$wakeUp(SleepRules.stayAwakeAfterHurt());
         }
     }
 }

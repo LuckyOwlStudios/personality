@@ -39,6 +39,22 @@ HD textures) gets matching eyelids without extra art. Optional: `"lash_shade"` (
 The lying-down pose is generic too: any model whose leg parts follow vanilla naming (`left_front_leg`,
 `right_hind_leg`, `left_leg`, ...) folds its legs and lowers onto the ground.
 
+## Config
+
+Options live in `config/personality.json`, created on first launch with a comment above every option.
+It is plain JSON with `//` comments and works the same on Fabric and NeoForge (no config library needed).
+Edits apply the next time a world or server starts. Missing options are filled in with defaults and out-of-range
+values are clamped.
+
+- `sleep`: turn sleeping on or off, startle radius, how long animals stay awake after being hurt, fed or
+  startled, whether pets wait for their owner, and whether sleepers are silent.
+- `schedule`: bedtimes and wake-up times (as 24-hour clock hours) for day- and night-active animals, and how
+  far each animal's own times may drift.
+- `client`: whether sleeping animals lie down and close their eyes.
+
+To add an option in code, declare it in `PersonalityConfig` with `bool`, `integer` or `decimal`, and read it with
+`PersonalityConfig.MY_OPTION.get()`.
+
 ## Building
 
 ```

@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.sleep;
 
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -16,29 +17,28 @@ public final class SleepRules {
     /** How often (in ticks) a mob re-checks its schedule. Mobs are staggered by entity id. */
     public static final int CHECK_INTERVAL = 20;
 
+    // Tunable values live in PersonalityConfig (config/personality.json).
+
     /** Ticks a mob stays awake after being hurt. */
-    public static final int STAY_AWAKE_AFTER_HURT = 1200;
+    public static int stayAwakeAfterHurt() {
+        return PersonalityConfig.ticks(PersonalityConfig.STAY_AWAKE_AFTER_HURT);
+    }
 
     /** Ticks a mob stays awake after a player interacts with it. */
-    public static final int STAY_AWAKE_AFTER_INTERACT = 200;
+    public static int stayAwakeAfterInteract() {
+        return PersonalityConfig.ticks(PersonalityConfig.STAY_AWAKE_AFTER_INTERACT);
+    }
 
     /** Ticks a mob stays awake after a running player startles it. */
-    public static final int STAY_AWAKE_AFTER_STARTLED = 400;
-
-    /** Players who sprint within this many blocks wake sleeping animals. Sneak or walk to let them be. */
-    private static final double STARTLE_RADIUS = 4.0;
-
-    /** Tamed pets that follow their owner only sleep if the owner is asleep or this far away. */
-    private static final double OWNER_AWAY_DISTANCE = 24.0;
-
-    /** A mob hurt by something this recently is too frightened to sleep. */
-    private static final int FRIGHTENED_TICKS = 600;
+    public static int stayAwakeAfterStartled() {
+        return PersonalityConfig.ticks(PersonalityConfig.STAY_AWAKE_AFTER_STARTLED);
+    }
 
     private SleepRules() {
     }
 
     public static boolean isSleeper(Mob mob) {
-        return mob.getType().is(PersonalityTags.SLEEPS);
+        return PersonalityConfig.SLEEP_ENABLED.get() && mob.getType().is(PersonalityTags.SLEEPS);
     }
 
     public static boolean isNocturnal(Mob mob) {
@@ -68,16 +68,17 @@ public final class SleepRules {
         if (mob.getTarget() != null || mob.isAggressive()) {
             return false;
         }
-        if (mob.getLastHurtByMob() != null && mob.tickCount - mob.getLastHurtByMobTimestamp() < FRIGHTENED_TICKS) {
+        if (mob.getLastHurtByMob() != null && mob.tickCount - mob.getLastHurtByMobTimestamp() < PersonalityConfig.ticks(PersonalityConfig.FRIGHTENED_SECONDS)) {
             return false;
         }
         if (mob instanceof Animal animal && animal.isInLove()) {
             return false;
         }
-        if (mob instanceof TamableAnimal pet && pet.isTame() && !pet.isOrderedToSit()) {
+        if (PersonalityConfig.PETS_WAIT_FOR_OWNER.get() && mob instanceof TamableAnimal pet && pet.isTame() && !pet.isOrderedToSit()) {
             // A pet following its owner stays up until the owner goes to bed or wanders off.
             LivingEntity owner = pet.getOwner();
-            if (owner != null && !owner.isSleeping() && owner.distanceToSqr(pet) < OWNER_AWAY_DISTANCE * OWNER_AWAY_DISTANCE) {
+            double awayDistance = PersonalityConfig.OWNER_AWAY_DISTANCE.get();
+            if (owner != null && !owner.isSleeping() && owner.distanceToSqr(pet) < awayDistance * awayDistance) {
                 return false;
             }
         }
@@ -86,7 +87,11 @@ public final class SleepRules {
 
     /** True if a player is sprinting close enough to startle the mob awake. */
     public static boolean isStartled(Mob mob) {
-        Player player = mob.level().getNearestPlayer(mob.getX(), mob.getY(), mob.getZ(), STARTLE_RADIUS, EntitySelector.NO_SPECTATORS);
+        double radius = PersonalityConfig.STARTLE_RADIUS.get();
+        if (radius <= 0.0) {
+            return false;
+        }
+        Player player = mob.level().getNearestPlayer(mob.getX(), mob.getY(), mob.getZ(), radius, EntitySelector.NO_SPECTATORS);
         return player != null && player.isSprinting();
     }
 }

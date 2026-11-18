@@ -1,6 +1,7 @@
 package net.luckyowlstudios.personality.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.sleep.SleepHooks;
 import net.luckyowlstudios.personality.sleep.SleepRules;
 import net.luckyowlstudios.personality.sleep.SleepingMob;
@@ -116,7 +117,7 @@ public abstract class MobMixin extends LivingEntity implements SleepingMob {
                 return;
             }
             if ((self.tickCount + self.getId()) % 10 == 0 && SleepRules.isStartled(self)) {
-                this.personality$wakeUp(SleepRules.STAY_AWAKE_AFTER_STARTLED);
+                this.personality$wakeUp(SleepRules.stayAwakeAfterStartled());
                 return;
             }
         }
@@ -136,14 +137,14 @@ public abstract class MobMixin extends LivingEntity implements SleepingMob {
     /** Sleeping animals make no ambient noise. */
     @WrapWithCondition(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;playAmbientSound()V"))
     private boolean personality$silenceWhileSleeping(Mob mob) {
-        return !this.personality$isSleeping();
+        return !this.personality$isSleeping() || !PersonalityConfig.SILENT_WHILE_SLEEPING.get();
     }
 
     /** Interacting with a sleeping animal (feeding, leashing, petting) wakes it. */
     @Inject(method = "interact", at = @At("HEAD"))
     private void personality$wakeOnInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (!this.level().isClientSide && this.personality$isSleeping()) {
-            this.personality$wakeUp(SleepRules.STAY_AWAKE_AFTER_INTERACT);
+            this.personality$wakeUp(SleepRules.stayAwakeAfterInteract());
         }
     }
 }
