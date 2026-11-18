@@ -7,6 +7,7 @@
   "mixins": [
     "LivingEntityMixin",
     "MobMixin",
+    "MobWeatherMixin",
     "ParrotMixin"
   ],
   "client": [
