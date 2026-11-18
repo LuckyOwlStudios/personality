@@ -16,6 +16,9 @@ public final class PersonalityTags {
     /** Sleepers in this tag doze standing up (like horses) instead of lying down. */
     public static final TagKey<EntityType<?>> SLEEPS_STANDING = TagKey.create(Registries.ENTITY_TYPE, Constants.id("sleeps_standing"));
 
+    /** Mobs that are born with personality traits. Defaults to every sleeper. */
+    public static final TagKey<EntityType<?>> HAS_TRAITS = TagKey.create(Registries.ENTITY_TYPE, Constants.id("has_traits"));
+
     private PersonalityTags() {
     }
 }
