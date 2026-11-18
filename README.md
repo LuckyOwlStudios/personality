@@ -56,6 +56,17 @@ The lying-down pose is generic too: any model whose leg parts follow vanilla nam
 - Leashed animals don't fight back.
 - Which animals fight back is data-driven: `data/personality/tags/entity_type/retaliates.json`.
 
+## Rain
+
+- When it rains, animals head for the nearest cover (under trees, roofs or overhangs), much like zombies and
+  skeletons hide from the sun, and stay there until the rain stops.
+- Animals can't fall asleep while rain is falling on them. One caught out in the rain at bedtime wakes up and
+  looks for cover, then dozes off once it's dry. Animals with no cover nearby stay awake.
+- Frogs, axolotls and turtles don't mind the rain. Tamed pets stick with their owner, and leashed or ridden
+  animals go where they're taken.
+- Data-driven via `data/personality/tags/entity_type/dislikes_rain.json`. Toggles live in `WeatherSettings`
+  (`seekShelterInRain`, `noSleepingInRain`, `shelterSearchRadius`, `shelterSpeed`), ready for the config.
+
 ## Building
 
 ```

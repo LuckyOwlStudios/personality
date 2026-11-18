@@ -9,6 +9,7 @@
     "LivingEntityMixin",
     "LivingEntityPanicMixin",
     "MobMixin",
+    "MobWeatherMixin",
     "ParrotMixin",
     "PathfinderMobMixin"
   ],
