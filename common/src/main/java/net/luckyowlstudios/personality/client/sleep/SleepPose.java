@@ -9,6 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.armadillo.Armadillo;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -48,6 +49,9 @@ public final class SleepPose {
     public static boolean shouldFoldLegs(LivingEntity entity, EntityModel<?> model) {
         if (entity.getType().is(PersonalityTags.SLEEPS_STANDING)) {
             return false;
+        }
+        if (entity instanceof Armadillo armadillo && armadillo.isScared()) {
+            return false; // Curled up in its shell.
         }
         if (entity.hasPose(Pose.SITTING)) {
             return false;
@@ -110,18 +114,47 @@ public final class SleepPose {
         return CACHE.computeIfAbsent(model, SleepPose::analyze);
     }
 
+    /** Model y of the ground: the renderer shifts models so that y = 24 sits on the ground. */
+    private static final float GROUND_Y = 24.0F;
+
     private static ModelInfo analyze(EntityModel<?> model) {
+        // Collect every part, then find the true roots (parts that aren't some other part's child).
         Set<ModelPart> parts = Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<ModelPart> children = Collections.newSetFromMap(new IdentityHashMap<>());
         ArrayDeque<ModelPart> queue = new ArrayDeque<>(rootParts(model));
         while (!queue.isEmpty()) {
             ModelPart part = queue.poll();
             if (parts.add(part)) {
-                queue.addAll(NamedModelPart.of(part).personality$getChildren().values());
+                for (ModelPart child : NamedModelPart.of(part).personality$getChildren().values()) {
+                    children.add(child);
+                    queue.add(child);
+                }
             }
         }
 
-        float lowering = 0.0F;
-        boolean hasLegs = false;
+        // Walk down from the roots, adding up pivot heights so each leg's hip height is in model space.
+        Map<ModelPart, Float> pivotY = new IdentityHashMap<>();
+        ArrayDeque<ModelPart> walk = new ArrayDeque<>();
+        for (ModelPart part : parts) {
+            if (!children.contains(part)) {
+                pivotY.put(part, part.getInitialPose().y);
+                walk.add(part);
+            }
+        }
+        while (!walk.isEmpty()) {
+            ModelPart part = walk.poll();
+            float y = pivotY.get(part);
+            for (ModelPart child : NamedModelPart.of(part).personality$getChildren().values()) {
+                if (!pivotY.containsKey(child)) {
+                    pivotY.put(child, y + child.getInitialPose().y);
+                    walk.add(child);
+                }
+            }
+        }
+
+        // Lower the body until the lowest folded leg touches the ground. Using the lowest leg (not the
+        // longest) keeps animals with long front legs and short back legs, like cats, above ground.
+        float lowestFoldedLeg = Float.NEGATIVE_INFINITY;
         for (ModelPart part : parts) {
             String name = NamedModelPart.of(part).personality$getName();
             if (name.contains("haunch")) {
@@ -132,13 +165,14 @@ public final class SleepPose {
                 continue;
             }
             for (ModelPart.Cube cube : NamedModelPart.of(part).personality$getCubes()) {
-                hasLegs = true;
-                float length = cube.maxY;
-                float halfThickness = (cube.maxZ - cube.minZ) / 2.0F;
-                lowering = Math.max(lowering, length - halfThickness);
+                // Folded forward by 90 degrees, the leg's z extent becomes its height below the hip.
+                lowestFoldedLeg = Math.max(lowestFoldedLeg, pivotY.getOrDefault(part, 0.0F) + cube.maxZ);
             }
         }
-        return hasLegs ? new ModelInfo(true, Math.max(0.0F, lowering)) : ModelInfo.NONE;
+        if (lowestFoldedLeg == Float.NEGATIVE_INFINITY) {
+            return ModelInfo.NONE;
+        }
+        return new ModelInfo(true, Math.max(0.0F, GROUND_Y - lowestFoldedLeg));
     }
 
     private static List<ModelPart> rootParts(EntityModel<?> model) {

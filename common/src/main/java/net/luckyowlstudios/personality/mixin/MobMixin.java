@@ -1,6 +1,7 @@
 package net.luckyowlstudios.personality.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import net.luckyowlstudios.personality.sleep.SleepHooks;
 import net.luckyowlstudios.personality.sleep.SleepRules;
 import net.luckyowlstudios.personality.sleep.SleepingMob;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -70,6 +71,9 @@ public abstract class MobMixin extends LivingEntity implements SleepingMob {
             self.setXRot(0);
             Vec3 motion = self.getDeltaMovement();
             self.setDeltaMovement(0, Math.min(motion.y, 0), 0);
+            SleepHooks.onFallAsleep(self);
+        } else {
+            SleepHooks.onWakeUp((Mob) (Object) this);
         }
     }
 
