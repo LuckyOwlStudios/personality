@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.client.sleep;
 
+import net.luckyowlstudios.personality.sleep.PersonalityTags;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -32,14 +33,22 @@ public final class SleepPose {
 
     private static final float LEG_FOLD = -Mth.HALF_PI;
     private static final float HEAD_DROOP = 0.35F;
+    /** Horses carry their head on a neck part ("head_parts"); a sleeping horse lets its neck hang low. */
+    private static final float NECK_DROOP = 0.9F;
 
     private static final Map<EntityModel<?>, ModelInfo> CACHE = Collections.synchronizedMap(new WeakHashMap<>());
 
     private SleepPose() {
     }
 
-    /** Whether legs should fold for this entity right now. Sitting pets and camels are already resting. */
+    /**
+     * Whether legs should fold for this entity right now. Standing sleepers (horses) keep their legs straight,
+     * and sitting pets and camels are already resting.
+     */
     public static boolean shouldFoldLegs(LivingEntity entity, EntityModel<?> model) {
+        if (entity.getType().is(PersonalityTags.SLEEPS_STANDING)) {
+            return false;
+        }
         if (entity.hasPose(Pose.SITTING)) {
             return false;
         }
@@ -70,6 +79,12 @@ public final class SleepPose {
             part.xRot = Mth.lerp(p, part.xRot, LEG_FOLD);
             part.yRot = Mth.lerp(p, part.yRot, 0.0F);
             part.zRot = Mth.lerp(p, part.zRot, 0.0F);
+            return saved;
+        }
+        if ("head_parts".equals(name)) {
+            PartPose saved = part.storePose();
+            part.xRot = Mth.lerp(p, part.xRot, NECK_DROOP);
+            part.yRot = Mth.lerp(p, part.yRot, 0.0F);
             return saved;
         }
         if ("head".equals(name)) {

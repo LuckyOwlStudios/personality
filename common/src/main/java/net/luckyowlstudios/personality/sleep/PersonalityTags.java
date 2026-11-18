@@ -13,6 +13,9 @@ public final class PersonalityTags {
     /** Sleepers in this tag sleep through the day and are awake at night. */
     public static final TagKey<EntityType<?>> NOCTURNAL = TagKey.create(Registries.ENTITY_TYPE, Constants.id("nocturnal"));
 
+    /** Sleepers in this tag doze standing up (like horses) instead of lying down. */
+    public static final TagKey<EntityType<?>> SLEEPS_STANDING = TagKey.create(Registries.ENTITY_TYPE, Constants.id("sleeps_standing"));
+
     private PersonalityTags() {
     }
 }

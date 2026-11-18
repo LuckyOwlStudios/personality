@@ -6,6 +6,7 @@ A Minecraft 1.21.1 mod (Fabric + NeoForge) that makes wildlife feel more alive.
 
 - Animals sleep at night. Each one has its own bedtime and wake-up time (derived from its UUID), so a herd drifts off one by one.
 - Nocturnal animals (cats, ocelots, armadillos) sleep through the day instead.
+- Horses, donkeys and mules doze standing up, with their necks hanging low.
 - Sleeping animals don't move, look around or make ambient sounds. They fold their legs and lie down, and their eyes close.
 - They wake up when hurt, when interacted with, when a player sprints nearby (sneak or walk to let them be), when leashed, picked up by water, or when morning comes.
 - Tamed pets that follow you stay up until you go to bed or leave them behind. Pets told to sit will doze off.
@@ -16,6 +17,7 @@ Sleeping is data-driven, so datapacks and other mods can opt mobs in:
 
 - `data/personality/tags/entity_type/sleeps.json`: mobs that follow a sleep schedule.
 - `data/personality/tags/entity_type/nocturnal.json`: sleepers that sleep by day.
+- `data/personality/tags/entity_type/sleeps_standing.json`: sleepers that stay on their feet instead of lying down.
 
 ### Closed eyes
 
