@@ -12,6 +12,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -57,7 +58,7 @@ public final class RainShelter {
 
     /** Brain-driven animals (goats, camels, armadillos, sniffers) walk via the WALK_TARGET memory, not goals. */
     public static boolean isBrainDriven(Mob mob) {
-        return mob.getBrain().hasMemoryModule(MemoryModuleType.WALK_TARGET);
+        return mob.getBrain().checkMemory(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED);
     }
 
     /** Whether the animal is free to go looking for cover (not leashed, ridden, fighting or following its owner). */
