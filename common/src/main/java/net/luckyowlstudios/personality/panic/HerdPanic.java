@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.panic;
 
+import net.luckyowlstudios.personality.retaliation.AngryMob;
 import net.luckyowlstudios.personality.sleep.PersonalityTags;
 import net.luckyowlstudios.personality.sleep.SleepRules;
 import net.luckyowlstudios.personality.sleep.SleepingMob;
@@ -41,6 +42,9 @@ public final class HerdPanic {
                 victim.getBoundingBox().inflate(ALARM_RADIUS, ALARM_HEIGHT, ALARM_RADIUS), HerdPanic::isSkittish)) {
             if (mob instanceof SleepingMob sleeper && sleeper.personality$isSleeping()) {
                 sleeper.personality$wakeUp(SleepRules.STAY_AWAKE_AFTER_HURT);
+            }
+            if (((AngryMob) mob).personality$getRetaliationTarget() != null) {
+                continue; // Busy fighting back.
             }
             ((ScaredMob) mob).personality$scare(player, SCARED_TICKS);
         }
