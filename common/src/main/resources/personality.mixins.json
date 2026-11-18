@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.luckyowlstudios.personality.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LivingEntityMixin",
+    "MobMixin",
+    "ParrotMixin"
+  ],
+  "client": [
+    "client.LivingEntityRendererAccessor",
+    "client.LivingEntityRendererMixin",
+    "client.ModelPartMixin"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

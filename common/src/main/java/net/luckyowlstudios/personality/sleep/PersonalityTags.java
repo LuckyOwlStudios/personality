@@ -1,0 +1,18 @@
+package net.luckyowlstudios.personality.sleep;
+
+import net.luckyowlstudios.personality.Constants;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+
+public final class PersonalityTags {
+
+    /** Mobs that follow a sleep schedule. Datapacks can add or remove mobs here. */
+    public static final TagKey<EntityType<?>> SLEEPS = TagKey.create(Registries.ENTITY_TYPE, Constants.id("sleeps"));
+
+    /** Sleepers in this tag sleep through the day and are awake at night. */
+    public static final TagKey<EntityType<?>> NOCTURNAL = TagKey.create(Registries.ENTITY_TYPE, Constants.id("nocturnal"));
+
+    private PersonalityTags() {
+    }
+}
