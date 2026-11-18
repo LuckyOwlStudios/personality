@@ -47,6 +47,15 @@ The lying-down pose is generic too: any model whose leg parts follow vanilla nam
 - Tamed pets, tamed horses, mounts with a rider and leashed animals stay put.
 - Which animals are skittish is data-driven: `data/personality/tags/entity_type/skittish.json`.
 
+## Fighting back
+
+- Cows, mooshrooms and goats don't take it lying down. Hit one and it charges you and headbutts you (one heart, with a
+  shove; goats shove harder) for about 10 seconds, or until you get 20 blocks away. Hitting it again keeps it angry.
+- The rest of the herd still bolts; only the animal you hit fights back. Calves and kids run away instead.
+- Players in creative or spectator mode are ignored, so the animal just panics as usual.
+- Leashed animals don't fight back.
+- Which animals fight back is data-driven: `data/personality/tags/entity_type/retaliates.json`.
+
 ## Building
 
 ```

@@ -19,6 +19,9 @@ public final class PersonalityTags {
     /** Wild animals that panic and run from a player who hurts one of them or a neighbour. */
     public static final TagKey<EntityType<?>> SKITTISH = TagKey.create(Registries.ENTITY_TYPE, Constants.id("skittish"));
 
+    /** Animals that fight back against a player who hurts them, instead of running away. */
+    public static final TagKey<EntityType<?>> RETALIATES = TagKey.create(Registries.ENTITY_TYPE, Constants.id("retaliates"));
+
     private PersonalityTags() {
     }
 }
