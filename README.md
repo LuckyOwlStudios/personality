@@ -50,7 +50,15 @@ values are clamped.
   startled, whether pets wait for their owner, and whether sleepers are silent.
 - `schedule`: bedtimes and wake-up times (as 24-hour clock hours) for day- and night-active animals, and how
   far each animal's own times may drift.
+- `herdPanic`: turn the stampede on or off, how far the alarm carries, how long animals run.
+- `retaliation`: turn fighting back on or off (off = cows and goats panic like everyone else), how long they stay
+  angry, and a multiplier for headbutt damage.
+- `rain`: whether rain-shy animals seek cover, whether they can sleep in the rain, and how far they search.
+- `traits`: a master switch (animals keep their traits but they stop having any effect) and the chance of each trait.
 - `client`: whether sleeping animals lie down and close their eyes.
+
+Which animals take part in each behaviour (skittish, fights back, dislikes rain, has traits) stays data-driven through
+the entity type tags below, so a datapack can change that without touching the config.
 
 To add an option in code, declare it in `PersonalityConfig` with `bool`, `integer` or `decimal`, and read it with
 `PersonalityConfig.MY_OPTION.get()`.
@@ -80,8 +88,7 @@ To add an option in code, declare it in `PersonalityConfig` with `bool`, `intege
   looks for cover, then dozes off once it's dry. Animals with no cover nearby stay awake.
 - Frogs, axolotls and turtles don't mind the rain. Tamed pets stick with their owner, and leashed or ridden
   animals go where they're taken.
-- Data-driven via `data/personality/tags/entity_type/dislikes_rain.json`. Toggles live in `WeatherSettings`
-  (`seekShelterInRain`, `noSleepingInRain`, `shelterSearchRadius`, `shelterSpeed`), ready for the config.
+- Data-driven via `data/personality/tags/entity_type/dislikes_rain.json`. Toggles are in the `rain` section of the config.
 
 ## Personality traits
 

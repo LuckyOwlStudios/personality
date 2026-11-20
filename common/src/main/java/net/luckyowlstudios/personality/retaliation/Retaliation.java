@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.retaliation;
 
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.panic.HerdPanic;
 import net.luckyowlstudios.personality.sleep.PersonalityTags;
 import net.minecraft.server.level.ServerLevel;
@@ -17,12 +18,6 @@ import net.minecraft.world.entity.player.Player;
  * player who hurts them: they charge the player and headbutt them instead of running away. Babies still flee.
  */
 public final class Retaliation {
-
-    /** Master switch, meant to be driven by the mod's config. */
-    public static boolean enabled = true;
-
-    /** How long an animal stays angry after the last hit, in ticks. */
-    public static final int ANGRY_TICKS = 200;
 
     /** An angry animal gives up once the player is this far away, in blocks. */
     public static final double GIVE_UP_DISTANCE = 20.0;
@@ -50,13 +45,13 @@ public final class Retaliation {
      */
     public static void provoke(LivingEntity victim, Player player) {
         if (victim instanceof PathfinderMob mob && canRetaliate(mob) && isValidTarget(mob, player)) {
-            ((AngryMob) mob).personality$provoke(player, ANGRY_TICKS);
+            ((AngryMob) mob).personality$provoke(player, PersonalityConfig.ticks(PersonalityConfig.ANGRY_SECONDS));
         }
     }
 
     /** Grown, wild, unleashed animals in the {@code personality:retaliates} tag. */
     public static boolean canRetaliate(PathfinderMob mob) {
-        return enabled && mob.isAlive() && !mob.isNoAi() && !mob.isBaby() && !mob.isLeashed() && !mob.isVehicle()
+        return PersonalityConfig.RETALIATION_ENABLED.get() && mob.isAlive() && !mob.isNoAi() && !mob.isBaby() && !mob.isLeashed() && !mob.isVehicle()
                 && mob.getType().is(PersonalityTags.RETALIATES);
     }
 
@@ -77,6 +72,7 @@ public final class Retaliation {
         boolean goat = mob.getType() == EntityType.GOAT;
         float damage = mob.getAttributes().hasAttribute(Attributes.ATTACK_DAMAGE)
                 ? (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) : DEFAULT_DAMAGE;
+        damage *= PersonalityConfig.RETALIATION_DAMAGE_MULTIPLIER.get().floatValue();
         DamageSource source = mob.damageSources().mobAttack(mob);
         if (!target.hurt(source, damage)) {
             return;

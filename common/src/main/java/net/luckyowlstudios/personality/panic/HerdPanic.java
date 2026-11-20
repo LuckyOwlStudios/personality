@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.panic;
 
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.retaliation.AngryMob;
 import net.luckyowlstudios.personality.sleep.PersonalityTags;
 import net.luckyowlstudios.personality.sleep.SleepRules;
@@ -15,14 +16,8 @@ import net.minecraft.world.entity.player.Player;
  */
 public final class HerdPanic {
 
-    /** Horizontal reach of the alarm, in blocks. */
-    public static final double ALARM_RADIUS = 12.0;
-
     /** Vertical reach of the alarm, in blocks. */
     public static final double ALARM_HEIGHT = 6.0;
-
-    /** How long a frightened animal keeps running, in ticks. */
-    public static final int SCARED_TICKS = 140;
 
     /** Animals stop running early once the player is this far away. */
     public static final double SAFE_DISTANCE = 28.0;
@@ -35,18 +30,23 @@ public final class HerdPanic {
 
     /** Called on the server after {@code victim} was hurt by {@code player}. */
     public static void alarm(LivingEntity victim, Player player) {
+        if (!PersonalityConfig.HERD_PANIC_ENABLED.get()) {
+            return;
+        }
+        double radius = PersonalityConfig.ALARM_RADIUS.get();
+        int scaredTicks = PersonalityConfig.ticks(PersonalityConfig.SCARED_SECONDS);
         if (!(victim instanceof PathfinderMob victimMob) || !isSkittish(victimMob)) {
             return;
         }
         for (PathfinderMob mob : victim.level().getEntitiesOfClass(PathfinderMob.class,
-                victim.getBoundingBox().inflate(ALARM_RADIUS, ALARM_HEIGHT, ALARM_RADIUS), HerdPanic::isSkittish)) {
+                victim.getBoundingBox().inflate(radius, ALARM_HEIGHT, radius), HerdPanic::isSkittish)) {
             if (mob instanceof SleepingMob sleeper && sleeper.personality$isSleeping()) {
                 sleeper.personality$wakeUp(SleepRules.stayAwakeAfterHurt());
             }
             if (((AngryMob) mob).personality$getRetaliationTarget() != null) {
                 continue; // Busy fighting back.
             }
-            ((ScaredMob) mob).personality$scare(player, SCARED_TICKS);
+            ((ScaredMob) mob).personality$scare(player, scaredTicks);
         }
     }
 

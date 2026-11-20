@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.mixin;
 
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.sleep.PersonalityTags;
 import net.luckyowlstudios.personality.trait.Trait;
 import net.luckyowlstudios.personality.trait.TraitEffects;
@@ -85,7 +86,7 @@ public abstract class MobTraitsMixin extends LivingEntity implements TraitHolder
     /** Animals meet their personality on their first server tick, whether freshly spawned, bred or from an old world. */
     @Inject(method = "tick", at = @At("HEAD"))
     private void personality$rollTraits(CallbackInfo ci) {
-        if (!this.personality$traitsRolled && !this.level().isClientSide) {
+        if (!this.personality$traitsRolled && !this.level().isClientSide && PersonalityConfig.TRAITS_ENABLED.get()) {
             this.personality$traitsRolled = true;
             if (this.getType().is(PersonalityTags.HAS_TRAITS)) {
                 this.personality$setTraits(Traits.roll(this.getRandom()));

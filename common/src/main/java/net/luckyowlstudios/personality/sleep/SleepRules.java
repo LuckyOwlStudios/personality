@@ -2,7 +2,6 @@ package net.luckyowlstudios.personality.sleep;
 
 import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.weather.RainShelter;
-import net.luckyowlstudios.personality.weather.WeatherSettings;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -67,7 +66,7 @@ public final class SleepRules {
         if (mob.isPassenger() || mob.isVehicle() || mob.isLeashed()) {
             return false;
         }
-        if (WeatherSettings.noSleepingInRain && RainShelter.dislikesRain(mob) && RainShelter.isExposedToRain(mob)) {
+        if (PersonalityConfig.NO_SLEEPING_IN_RAIN.get() && RainShelter.dislikesRain(mob) && RainShelter.isExposedToRain(mob)) {
             // Too wet to sleep: the animal stays up (and goes looking for cover) until it's dry.
             return false;
         }

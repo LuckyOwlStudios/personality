@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.trait;
 
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -16,6 +17,9 @@ public final class TraitEffects {
     }
 
     public static Set<Trait> traits(Mob mob) {
+        if (!PersonalityConfig.TRAITS_ENABLED.get()) {
+            return Set.of();
+        }
         return mob instanceof TraitHolder holder ? holder.personality$getTraits() : Set.of();
     }
 

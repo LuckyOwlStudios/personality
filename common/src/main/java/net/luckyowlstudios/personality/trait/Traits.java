@@ -1,6 +1,8 @@
 package net.luckyowlstudios.personality.trait;
 
 import net.luckyowlstudios.personality.Constants;
+import net.luckyowlstudios.personality.config.ConfigEntry;
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
@@ -66,11 +68,17 @@ public final class Traits {
         shuffle(candidates, random);
         Set<Trait> picked = new LinkedHashSet<>();
         for (Trait trait : candidates) {
-            if (random.nextFloat() < trait.chance() && picked.stream().allMatch(trait::isCompatibleWith)) {
+            if (random.nextFloat() < chanceOf(trait) && picked.stream().allMatch(trait::isCompatibleWith)) {
                 picked.add(trait);
             }
         }
         return picked;
+    }
+
+    /** The chance from the config for built-in traits, else the trait's own default. */
+    private static float chanceOf(Trait trait) {
+        ConfigEntry<Double> configured = PersonalityConfig.traitChance(trait.id());
+        return configured != null ? configured.get().floatValue() : trait.chance();
     }
 
     /** Loads the class so the built-in traits register early. */

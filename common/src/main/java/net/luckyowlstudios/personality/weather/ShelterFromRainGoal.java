@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.weather;
 
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -29,7 +30,7 @@ public class ShelterFromRainGoal extends Goal {
     }
 
     private boolean isActive() {
-        return WeatherSettings.seekShelterInRain && this.mob.level().isRaining() && RainShelter.dislikesRain(this.mob)
+        return PersonalityConfig.SEEK_SHELTER_IN_RAIN.get() && this.mob.level().isRaining() && RainShelter.dislikesRain(this.mob)
                 && !RainShelter.isBrainDriven(this.mob) && RainShelter.canSeekShelter(this.mob);
     }
 
@@ -46,7 +47,7 @@ public class ShelterFromRainGoal extends Goal {
     @Override
     public void start() {
         if (this.shelter != null) {
-            this.mob.getNavigation().moveTo(this.shelter.getX() + 0.5, this.shelter.getY(), this.shelter.getZ() + 0.5, WeatherSettings.shelterSpeed);
+            this.mob.getNavigation().moveTo(this.shelter.getX() + 0.5, this.shelter.getY(), this.shelter.getZ() + 0.5, RainShelter.SHELTER_SPEED);
         }
     }
 

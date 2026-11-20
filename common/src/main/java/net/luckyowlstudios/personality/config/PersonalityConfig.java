@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.luckyowlstudios.personality.Constants;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -95,6 +96,69 @@ public final class PersonalityConfig {
             "How far each animal's own bedtime and wake-up time can drift past the times above, so a herd drifts off one by one. 0 = all at once.",
             2.4, 0.0, 12.0);
 
+    // --- Herd panic ---
+
+    static {
+        SECTION_COMMENTS.put("herdPanic", "Hit a skittish animal and the herd bolts. Which animals are skittish is set by the personality:skittish tag.");
+    }
+
+    public static final ConfigEntry<Boolean> HERD_PANIC_ENABLED = bool("herdPanic", "enabled",
+            "Whether hurting an animal makes its neighbours run away from you.", true);
+
+    public static final ConfigEntry<Double> ALARM_RADIUS = decimal("herdPanic", "alarmRadius",
+            "How many blocks around the hurt animal other animals hear the alarm.", 12.0, 1.0, 48.0);
+
+    public static final ConfigEntry<Integer> SCARED_SECONDS = integer("herdPanic", "scaredSeconds",
+            "How long, in seconds, a frightened animal keeps running.", 7, 1, 60);
+
+    // --- Retaliation ---
+
+    static {
+        SECTION_COMMENTS.put("retaliation", "Some animals fight back instead of running (cows, mooshrooms and goats by default, see the personality:retaliates tag).");
+    }
+
+    public static final ConfigEntry<Boolean> RETALIATION_ENABLED = bool("retaliation", "enabled",
+            "Whether animals in the personality:retaliates tag charge and headbutt a player who hurts them. Off = they panic like everyone else.", true);
+
+    public static final ConfigEntry<Integer> ANGRY_SECONDS = integer("retaliation", "angrySeconds",
+            "How long, in seconds, an animal stays angry after the last time it was hit.", 10, 1, 120);
+
+    public static final ConfigEntry<Double> RETALIATION_DAMAGE_MULTIPLIER = decimal("retaliation", "damageMultiplier",
+            "Scales how hard headbutts hit. 1 = vanilla goat damage and one heart for cows, 0.5 = half as much.", 1.0, 0.1, 10.0);
+
+    // --- Rain ---
+
+    static {
+        SECTION_COMMENTS.put("rain", "Rain-shy animals (personality:dislikes_rain tag) look for cover when it rains.");
+    }
+
+    public static final ConfigEntry<Boolean> SEEK_SHELTER_IN_RAIN = bool("rain", "seekShelter",
+            "Rain-shy animals walk to the nearest cover when it starts to rain.", true);
+
+    public static final ConfigEntry<Boolean> NO_SLEEPING_IN_RAIN = bool("rain", "noSleepingInRain",
+            "Rain-shy animals can't fall or stay asleep while rain falls on them.", true);
+
+    public static final ConfigEntry<Integer> SHELTER_SEARCH_RADIUS = integer("rain", "shelterSearchRadius",
+            "How far, in blocks, an animal looks around for cover. Smaller is cheaper on big farms.", 12, 2, 32);
+
+    // --- Traits ---
+
+    static {
+        SECTION_COMMENTS.put("traits", "Each animal is born with a random set of personality traits. Chances are 0 (never) to 1 (always).");
+    }
+
+    public static final ConfigEntry<Boolean> TRAITS_ENABLED = bool("traits", "enabled",
+            "Turns every trait off: no new rolls and no effects. Animals keep the traits they already have and get their effects back if you turn this on again.", true);
+
+    public static final ConfigEntry<Double> SILLY_CHANCE = decimal("traits", "sillyChance",
+            "Chance an animal is Silly (stays up late, sleeps in).", 0.15, 0.0, 1.0);
+
+    public static final ConfigEntry<Double> SLEEPY_CHANCE = decimal("traits", "sleepyChance",
+            "Chance an animal is Sleepy (early to bed, sleeps in, 20% slower). Never together with Silly.", 0.15, 0.0, 1.0);
+
+    public static final ConfigEntry<Double> CURIOUS_CHANCE = decimal("traits", "curiousChance",
+            "Chance an animal is Curious (follows nearby players and villagers for a while).", 0.15, 0.0, 1.0);
+
     // --- Client ---
 
     static {
@@ -127,6 +191,19 @@ public final class PersonalityConfig {
 
     static ConfigEntry<Double> decimal(String section, String key, String comment, double defaultValue, double min, double max) {
         return add(new ConfigEntry.Decimal(section, key, comment, defaultValue, min, max));
+    }
+
+    /** The configured chance for a built-in trait, or null for traits added by other code. */
+    public static ConfigEntry<Double> traitChance(ResourceLocation id) {
+        if (!id.getNamespace().equals(Constants.MOD_ID)) {
+            return null;
+        }
+        return switch (id.getPath()) {
+            case "silly" -> SILLY_CHANCE;
+            case "sleepy" -> SLEEPY_CHANCE;
+            case "curious" -> CURIOUS_CHANCE;
+            default -> null;
+        };
     }
 
     /** Converts a config value in seconds to game ticks. */

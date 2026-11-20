@@ -1,5 +1,6 @@
 package net.luckyowlstudios.personality.trait.goal;
 
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.sleep.SleepingMob;
 import net.luckyowlstudios.personality.trait.TraitHolder;
 import net.luckyowlstudios.personality.trait.Traits;
@@ -47,7 +48,7 @@ public class CuriousFollowGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (!(this.mob instanceof TraitHolder holder) || !holder.personality$hasTrait(Traits.CURIOUS)) {
+        if (!PersonalityConfig.TRAITS_ENABLED.get() || !(this.mob instanceof TraitHolder holder) || !holder.personality$hasTrait(Traits.CURIOUS)) {
             return false;
         }
         // Brain-driven mobs (goats, camels, frogs...) steer themselves; a goal pathing them around would fight the brain.
