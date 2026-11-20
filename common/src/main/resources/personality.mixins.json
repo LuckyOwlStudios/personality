@@ -9,9 +9,11 @@
     "LivingEntityMixin",
     "LivingEntityPanicMixin",
     "MobMixin",
+    "MobTraitsMixin",
     "MobWeatherMixin",
     "ParrotMixin",
-    "PathfinderMobMixin"
+    "PathfinderMobMixin",
+    "PathfinderMobTraitsMixin"
   ],
   "client": [
     "client.LivingEntityRendererAccessor",

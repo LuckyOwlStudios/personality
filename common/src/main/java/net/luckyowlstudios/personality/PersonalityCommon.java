@@ -1,6 +1,7 @@
 package net.luckyowlstudios.personality;
 
 import net.luckyowlstudios.personality.config.PersonalityConfig;
+import net.luckyowlstudios.personality.trait.Traits;
 
 import java.nio.file.Path;
 
@@ -14,6 +15,7 @@ public final class PersonalityCommon {
 
     public static void init(Path configDir) {
         PersonalityConfig.init(configDir);
+        Traits.bootstrap();
         Constants.LOG.info("Personality is giving wildlife a bedtime.");
     }
 

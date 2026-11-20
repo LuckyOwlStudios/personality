@@ -22,6 +22,9 @@ public final class PersonalityTags {
     /** Animals that fight back against a player who hurts them, instead of running away. */
     public static final TagKey<EntityType<?>> RETALIATES = TagKey.create(Registries.ENTITY_TYPE, Constants.id("retaliates"));
 
+    /** Mobs that are born with personality traits. Defaults to every sleeper. */
+    public static final TagKey<EntityType<?>> HAS_TRAITS = TagKey.create(Registries.ENTITY_TYPE, Constants.id("has_traits"));
+
     private PersonalityTags() {
     }
 }

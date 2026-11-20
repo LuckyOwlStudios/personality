@@ -1,6 +1,7 @@
 package net.luckyowlstudios.personality.sleep;
 
 import net.luckyowlstudios.personality.config.PersonalityConfig;
+import net.luckyowlstudios.personality.trait.TraitEffects;
 import net.minecraft.world.entity.Mob;
 
 /**
@@ -26,10 +27,11 @@ public final class SleepSchedule {
         int bedOffset = (int) Math.floorMod(mix(seed), spread);
         int wakeOffset = (int) Math.floorMod(mix(seed * 31L + 0x9E3779B97F4A7C15L), spread);
 
-        int start = PersonalityConfig.dayTime(nocturnal ? PersonalityConfig.NOCTURNAL_BEDTIME : PersonalityConfig.DIURNAL_BEDTIME) + bedOffset;
-        int end = PersonalityConfig.dayTime(nocturnal ? PersonalityConfig.NOCTURNAL_WAKE : PersonalityConfig.DIURNAL_WAKE) + wakeOffset;
+        // Personality traits push the whole schedule around (a silly animal stays up late, a sleepy one turns in early).
+        int start = PersonalityConfig.dayTime(nocturnal ? PersonalityConfig.NOCTURNAL_BEDTIME : PersonalityConfig.DIURNAL_BEDTIME) + bedOffset + TraitEffects.bedtimeShift(mob);
+        int end = PersonalityConfig.dayTime(nocturnal ? PersonalityConfig.NOCTURNAL_WAKE : PersonalityConfig.DIURNAL_WAKE) + wakeOffset + TraitEffects.wakeShift(mob);
         int time = (int) Math.floorMod(dayTime, (long) DAY_LENGTH);
-        return inWindow(time, start % DAY_LENGTH, end % DAY_LENGTH);
+        return inWindow(time, Math.floorMod(start, DAY_LENGTH), Math.floorMod(end, DAY_LENGTH));
     }
 
     private static boolean inWindow(int time, int start, int end) {
