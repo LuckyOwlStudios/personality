@@ -39,6 +39,47 @@ HD textures) gets matching eyelids without extra art. Optional: `"lash_shade"` (
 The lying-down pose is generic too: any model whose leg parts follow vanilla naming (`left_front_leg`,
 `right_hind_leg`, `left_leg`, ...) folds its legs and lowers onto the ground.
 
+## Config
+
+Options live in `config/personality.json`, created on first launch with a comment above every option.
+It is plain JSON with `//` comments and works the same on Fabric and NeoForge (no config library needed).
+Edits apply the next time a world or server starts. Missing options are filled in with defaults and out-of-range
+values are clamped.
+
+- `sleep`: turn sleeping on or off, startle radius, how long animals stay awake after being hurt, fed or
+  startled, whether pets wait for their owner, and whether sleepers are silent.
+- `schedule`: bedtimes and wake-up times (as 24-hour clock hours) for day- and night-active animals, and how
+  far each animal's own times may drift.
+- `herdPanic`: turn the stampede on or off, how far the alarm carries, how long animals run.
+- `retaliation`: turn fighting back on or off (off = cows and goats panic like everyone else), how long they stay
+  angry, and a multiplier for headbutt damage.
+- `rain`: whether rain-shy animals seek cover, whether they can sleep in the rain, and how far they search.
+- `traits`: a master switch (animals keep their traits but they stop having any effect) and the chance of each trait.
+- `client`: whether sleeping animals lie down and close their eyes.
+
+Which animals take part in each behaviour (skittish, fights back, dislikes rain, has traits) stays data-driven through
+the entity type tags below, so a datapack can change that without touching the config.
+
+To add an option in code, declare it in `PersonalityConfig` with `bool`, `integer` or `decimal`, and read it with
+`PersonalityConfig.MY_OPTION.get()`.
+
+## Herd panic
+
+- Hit an animal and the whole herd bolts. Every skittish animal within 12 blocks (the one you hit included) runs away
+  from you for about 7 seconds, or until it's well clear of you. Arrows and other projectiles count too.
+- Sleeping animals nearby wake up and run.
+- Tamed pets, tamed horses, mounts with a rider and leashed animals stay put.
+- Which animals are skittish is data-driven: `data/personality/tags/entity_type/skittish.json`.
+
+## Fighting back
+
+- Cows, mooshrooms and goats don't take it lying down. Hit one and it charges you and headbutts you (one heart, with a
+  shove; goats shove harder) for about 10 seconds, or until you get 20 blocks away. Hitting it again keeps it angry.
+- The rest of the herd still bolts; only the animal you hit fights back. Calves and kids run away instead.
+- Players in creative or spectator mode are ignored, so the animal just panics as usual.
+- Leashed animals don't fight back.
+- Which animals fight back is data-driven: `data/personality/tags/entity_type/retaliates.json`.
+
 ## Rain
 
 - When it rains, animals head for the nearest cover (under trees, roofs or overhangs), much like zombies and
@@ -47,8 +88,28 @@ The lying-down pose is generic too: any model whose leg parts follow vanilla nam
   looks for cover, then dozes off once it's dry. Animals with no cover nearby stay awake.
 - Frogs, axolotls and turtles don't mind the rain. Tamed pets stick with their owner, and leashed or ridden
   animals go where they're taken.
-- Data-driven via `data/personality/tags/entity_type/dislikes_rain.json`. Toggles live in `WeatherSettings`
-  (`seekShelterInRain`, `noSleepingInRain`, `shelterSearchRadius`, `shelterSpeed`), ready for the config.
+- Data-driven via `data/personality/tags/entity_type/dislikes_rain.json`. Toggles are in the `rain` section of the config.
+
+## Personality traits
+
+Each animal is born with a random set of traits (rolled the first time it is loaded, saved with the animal, and
+synced to clients). Traits nudge an animal's behaviour, so no two animals in a herd act quite the same.
+
+| Trait  | Chance | Effect |
+|--------|--------|--------|
+| Silly  | 15%    | Goes to bed ~1.8 hours later and wakes ~1.5 hours later. |
+| Sleepy | 15%    | Goes to bed ~1.5 hours earlier, wakes ~1.5 hours later, and moves 20% slower. |
+| Curious | 15%   | Now and then (about every 30 seconds to 2 minutes) follows a nearby player or villager for 10 to 25 seconds, keeping about 3 blocks away. |
+
+Silly and Sleepy never appear together. Behaviour traits such as Curious use AI goals, so they don't affect
+brain-driven mobs (goats, camels, armadillos, frogs, axolotls, sniffers) yet. Which mobs get traits is controlled by
+`data/personality/tags/entity_type/has_traits.json` (every sleeper by default).
+
+Ops can inspect and edit traits with `/personality traits <targets>`, plus `add <trait>`, `remove <trait>` or
+`reroll`. For example, `/personality traits @e[type=cow,distance=..10]` lists the traits of nearby cows.
+
+New traits are registered in `Traits` with `Trait.builder(...)`; each builder option is a kind of effect
+(schedule shifts, speed, incompatibilities) that the rest of the mod reads through `TraitEffects`.
 
 ## Building
 

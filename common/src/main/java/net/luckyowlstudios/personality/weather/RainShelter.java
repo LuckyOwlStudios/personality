@@ -1,6 +1,7 @@
 package net.luckyowlstudios.personality.weather;
 
 import net.luckyowlstudios.personality.Constants;
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -30,6 +31,9 @@ public final class RainShelter {
     public static final TagKey<EntityType<?>> DISLIKES_RAIN = TagKey.create(Registries.ENTITY_TYPE, Constants.id("dislikes_rain"));
 
     /** Random spots sampled per search; the closest covered one wins. */
+    /** Walking speed multiplier when heading for cover. */
+    public static final double SHELTER_SPEED = 1.2;
+
     private static final int SEARCH_ATTEMPTS = 24;
 
     /** How often (in ticks) brain-driven animals look for cover while out in the rain. */
@@ -79,7 +83,7 @@ public final class RainShelter {
         Level level = mob.level();
         RandomSource random = mob.getRandom();
         BlockPos origin = mob.blockPosition();
-        int radius = Math.max(1, WeatherSettings.shelterSearchRadius);
+        int radius = PersonalityConfig.SHELTER_SEARCH_RADIUS.get();
         BlockPos best = null;
         double bestDistance = Double.MAX_VALUE;
         for (int i = 0; i < SEARCH_ATTEMPTS; i++) {
@@ -135,7 +139,7 @@ public final class RainShelter {
      * once covered, any stroll that would lead them back out into the rain is cancelled.
      */
     public static void tickBrain(Mob mob) {
-        if (!WeatherSettings.seekShelterInRain || !(mob instanceof PathfinderMob pathfinder) || !mob.level().isRaining()) {
+        if (!PersonalityConfig.SEEK_SHELTER_IN_RAIN.get() || !(mob instanceof PathfinderMob pathfinder) || !mob.level().isRaining()) {
             return;
         }
         if ((mob.tickCount + mob.getId()) % 10 != 0) {
@@ -162,7 +166,7 @@ public final class RainShelter {
             }
             BlockPos shelter = findShelter(pathfinder);
             if (shelter != null) {
-                brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(shelter, (float) WeatherSettings.shelterSpeed, 0));
+                brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(shelter, (float) SHELTER_SPEED, 0));
             }
         } else if (walkTarget.isPresent() && !headingForCover) {
             brain.eraseMemory(MemoryModuleType.WALK_TARGET);

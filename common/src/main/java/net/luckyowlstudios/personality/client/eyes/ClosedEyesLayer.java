@@ -2,6 +2,7 @@ package net.luckyowlstudios.personality.client.eyes;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.luckyowlstudios.personality.config.PersonalityConfig;
 import net.luckyowlstudios.personality.sleep.SleepingMob;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,7 +29,7 @@ public class ClosedEyesLayer<T extends LivingEntity, M extends EntityModel<T>> e
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T entity, float limbSwing, float limbSwingAmount,
                        float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (!(entity instanceof SleepingMob sleeper) || entity.isInvisible()) {
+        if (!PersonalityConfig.CLOSED_EYES.get() || !(entity instanceof SleepingMob sleeper) || entity.isInvisible()) {
             return;
         }
         if (sleeper.personality$getSleepProgress(partialTick) < EYES_CLOSED_AT) {

@@ -5,10 +5,15 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AnimalPanicMixin",
     "LivingEntityMixin",
+    "LivingEntityPanicMixin",
     "MobMixin",
+    "MobTraitsMixin",
     "MobWeatherMixin",
-    "ParrotMixin"
+    "ParrotMixin",
+    "PathfinderMobMixin",
+    "PathfinderMobTraitsMixin"
   ],
   "client": [
     "client.LivingEntityRendererAccessor",
