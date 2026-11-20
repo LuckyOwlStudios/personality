@@ -55,6 +55,34 @@ values are clamped.
 To add an option in code, declare it in `PersonalityConfig` with `bool`, `integer` or `decimal`, and read it with
 `PersonalityConfig.MY_OPTION.get()`.
 
+## Herd panic
+
+- Hit an animal and the whole herd bolts. Every skittish animal within 12 blocks (the one you hit included) runs away
+  from you for about 7 seconds, or until it's well clear of you. Arrows and other projectiles count too.
+- Sleeping animals nearby wake up and run.
+- Tamed pets, tamed horses, mounts with a rider and leashed animals stay put.
+- Which animals are skittish is data-driven: `data/personality/tags/entity_type/skittish.json`.
+
+## Fighting back
+
+- Cows, mooshrooms and goats don't take it lying down. Hit one and it charges you and headbutts you (one heart, with a
+  shove; goats shove harder) for about 10 seconds, or until you get 20 blocks away. Hitting it again keeps it angry.
+- The rest of the herd still bolts; only the animal you hit fights back. Calves and kids run away instead.
+- Players in creative or spectator mode are ignored, so the animal just panics as usual.
+- Leashed animals don't fight back.
+- Which animals fight back is data-driven: `data/personality/tags/entity_type/retaliates.json`.
+
+## Rain
+
+- When it rains, animals head for the nearest cover (under trees, roofs or overhangs), much like zombies and
+  skeletons hide from the sun, and stay there until the rain stops.
+- Animals can't fall asleep while rain is falling on them. One caught out in the rain at bedtime wakes up and
+  looks for cover, then dozes off once it's dry. Animals with no cover nearby stay awake.
+- Frogs, axolotls and turtles don't mind the rain. Tamed pets stick with their owner, and leashed or ridden
+  animals go where they're taken.
+- Data-driven via `data/personality/tags/entity_type/dislikes_rain.json`. Toggles live in `WeatherSettings`
+  (`seekShelterInRain`, `noSleepingInRain`, `shelterSearchRadius`, `shelterSpeed`), ready for the config.
+
 ## Building
 
 ```
